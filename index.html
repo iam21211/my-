@@ -34,15 +34,6 @@
             font-size: 18px;
             margin-right: 10px;
         }
-        #no-button {
-            padding: 10px 20px;
-            background-color: #b44c77; /* Red-purple color */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 18px;
-        }
         #button {
             position: absolute;
             padding: 10px 20px;
@@ -80,31 +71,38 @@
     <div id="container">
         <div id="text">তোমার ফ্রেন্ড কে আমারে দিবা, মিথিলা</div>
         <button id="yes-button">Yes</button>
-        
         <button id="button">No</button>
         <div id="celebration">🎉🎉 Now You Both Are Mine! 🎉🎉</div>
         <img id="image" src="img.png" alt="Celebration Image">
-
     </div>
 
     <script>
         const button = document.getElementById('button');
-       
         const yesButton = document.getElementById('yes-button');
         const celebration = document.getElementById('celebration');
         const image = document.getElementById('image');
         const text = document.getElementById('text');
-        const moveAmount = 400;
+        const moveAmount = 5;
         const edgeDropAmount = 100;
 
-        // Move button logic
-        document.addEventListener('mousemove', (event) => {
+        // Add event listeners for both mousemove and touchmove
+        document.addEventListener('mousemove', moveButton); // For desktop mouse move
+        document.addEventListener('touchmove', moveButton); // For mobile touch move
+
+        function moveButton(event) {
             const rect = button.getBoundingClientRect();
             const buttonX = rect.left + rect.width / 2;
             const buttonY = rect.top + rect.height / 2;
 
-            const mouseX = event.clientX;
-            const mouseY = event.clientY;
+            let mouseX, mouseY;
+            
+            if (event.type === 'touchmove') {
+                mouseX = event.touches[0].clientX; // Get touch position
+                mouseY = event.touches[0].clientY; // Get touch position
+            } else {
+                mouseX = event.clientX; // Get mouse position
+                mouseY = event.clientY; // Get mouse position
+            }
 
             const deltaX = mouseX - buttonX;
             const deltaY = mouseY - buttonY;
@@ -138,23 +136,17 @@
                 button.style.left = `${newLeft}px`;
                 button.style.top = `${newTop}px`;
             }
+        }
+
+        // Button click effects
+        yesButton.addEventListener('click', () => {
+            text.textContent = "Now you both are mine";
+            celebration.style.display = 'block';
+            image.style.display = 'block';
+            yesButton.style.display = 'none';
+            button.style.display = 'none';
         });
-yesButton.addEventListener('click', () => {
-    // Change the text and show celebration and image
-    text.textContent = "Now you both are mine";
-    celebration.style.display = 'block';
-    image.style.display = 'block';
-    
-    // Hide both buttons
-    yesButton.style.display = 'none';
-    button.style.display = 'none';  // This is the 'No' button that moves around
 
-    createParticles();  // Optional function to create particle effects
-});
-
-        
-
-      
     </script>
 </body>
 </html>
