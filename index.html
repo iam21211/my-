@@ -140,17 +140,18 @@
             }
         });
 yesButton.addEventListener('click', () => {
+    // Change the text and show celebration and image
     text.textContent = "Now you both are mine";
     celebration.style.display = 'block';
     image.style.display = 'block';
     
-    // Hide buttons after the 'Yes' button is clicked
+    // Hide both buttons
     yesButton.style.display = 'none';
-    button.style.display = 'none';
+    button.style.display = 'none';  // This is the 'No' button that moves around
 
-    createParticles();
+    createParticles();  // Optional function to create particle effects
 });
-        
+
         
 
       
