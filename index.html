@@ -18,6 +18,7 @@
         }
         #container {
             text-align: center;
+            position: relative;
         }
         #text {
             font-size: 28px;
@@ -48,13 +49,13 @@
             display: none;
             margin-top: 20px;
             font-size: 24px;
-            color: #f39c12; /* Bright yellow color for celebration */
+            color: #f39c12;
             position: relative;
         }
         #image {
             display: none;
             margin-top: 20px;
-            width: 300px; /* Standard size */
+            width: 300px;
             height: 382px;
             border-radius: 10px;
         }
@@ -82,31 +83,28 @@
         const celebration = document.getElementById('celebration');
         const image = document.getElementById('image');
         const text = document.getElementById('text');
-        const moveAmount = 5;
-        const edgeDropAmount = 100;
+        const moveAmount = 60; // Amount of movement
+        const edgeDropAmount = 100; // Amount of movement when hitting the edge
 
-        // Add event listeners for both mousemove and touchmove
-        document.addEventListener('mousemove', moveButton); // For desktop mouse move
-        document.addEventListener('touchmove', moveButton); // For mobile touch move
-
+        // Function to handle button movement
         function moveButton(event) {
             const rect = button.getBoundingClientRect();
             const buttonX = rect.left + rect.width / 2;
             const buttonY = rect.top + rect.height / 2;
 
             let mouseX, mouseY;
-            
+
+            // Check if the event is a touch event or mouse event
             if (event.type === 'touchmove') {
-                mouseX = event.touches[0].clientX; // Get touch position
-                mouseY = event.touches[0].clientY; // Get touch position
+                mouseX = event.touches[0].clientX;
+                mouseY = event.touches[0].clientY;
             } else {
-                mouseX = event.clientX; // Get mouse position
-                mouseY = event.clientY; // Get mouse position
+                mouseX = event.clientX;
+                mouseY = event.clientY;
             }
 
             const deltaX = mouseX - buttonX;
             const deltaY = mouseY - buttonY;
-
             const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
             if (distance < 100) {
@@ -118,6 +116,7 @@
                 const buttonWidth = button.offsetWidth;
                 const buttonHeight = button.offsetHeight;
 
+                // Keep the button within the viewport
                 if (newLeft < 0) {
                     newLeft = 0;
                     newTop -= edgeDropAmount;
@@ -137,6 +136,11 @@
                 button.style.top = `${newTop}px`;
             }
         }
+
+        // Add event listeners for both mouse and touch events
+        document.addEventListener('mousemove', moveButton);
+        document.addEventListener('touchmove', moveButton);
+        document.addEventListener('touchstart', moveButton); // Start moving when touch starts
 
         // Button click effects
         yesButton.addEventListener('click', () => {
