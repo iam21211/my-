@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Button</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #container {
+            text-align: center;
+        }
+        #text {
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #yes-button {
+            padding: 10px 20px;
+            background-color: #f8bbd0; /* Light pink color */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+        #no-button {
+            padding: 10px 20px;
+            background-color: #b44c77; /* Red-purple color */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        #button {
+            position: absolute;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #celebration {
+            display: none;
+            margin-top: 20px;
+            font-size: 24px;
+            color: #f39c12; /* Bright yellow color for celebration */
+            position: relative;
+        }
+        #image {
+            display: none;
+            margin-top: 20px;
+            width: 300px; /* Standard size */
+            height: 382px;
+            border-radius: 10px;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: #f39c12;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="text">তোমার ফ্রেন্ড কে আমারে দিবা, মিথিলা</div>
+        <button id="yes-button">Yes</button>
+        
+        <button id="button">No</button>
+        <div id="celebration">🎉🎉 Now You Both Are Mine! 🎉🎉</div>
+        <img id="image" src="https://imgur.com/hWKgMxG" alt="Celebration Image">
+    </div>
+
+    <script>
+        const button = document.getElementById('button');
+       
+        const yesButton = document.getElementById('yes-button');
+        const celebration = document.getElementById('celebration');
+        const image = document.getElementById('image');
+        const text = document.getElementById('text');
+        const moveAmount = 5;
+        const edgeDropAmount = 100;
+
+        // Move button logic
+        document.addEventListener('mousemove', (event) => {
+            const rect = button.getBoundingClientRect();
+            const buttonX = rect.left + rect.width / 2;
+            const buttonY = rect.top + rect.height / 2;
+
+            const mouseX = event.clientX;
+            const mouseY = event.clientY;
+
+            const deltaX = mouseX - buttonX;
+            const deltaY = mouseY - buttonY;
+
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+            if (distance < 100) {
+                let newLeft = button.offsetLeft + (mouseX < buttonX ? moveAmount : -moveAmount);
+                let newTop = button.offsetTop + (mouseY < buttonY ? moveAmount : -moveAmount);
+
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                const buttonWidth = button.offsetWidth;
+                const buttonHeight = button.offsetHeight;
+
+                if (newLeft < 0) {
+                    newLeft = 0;
+                    newTop -= edgeDropAmount;
+                } else if (newLeft + buttonWidth > viewportWidth) {
+                    newLeft = viewportWidth - buttonWidth;
+                    newTop -= edgeDropAmount;
+                }
+                if (newTop < 0) {
+                    newTop = 0;
+                    newLeft -= edgeDropAmount;
+                } else if (newTop + buttonHeight > viewportHeight) {
+                    newTop = viewportHeight - buttonHeight;
+                    newLeft -= edgeDropAmount;
+                }
+
+                button.style.left = `${newLeft}px`;
+                button.style.top = `${newTop}px`;
+            }
+        });
+
+        // Button click effects
+        yesButton.addEventListener('click', () => {
+            text.textContent = "Now you both are mine";
+            celebration.style.display = 'block';
+            image.style.display = 'block';
+            createParticles();
+        });
+
+        
+
+      
+    </script>
+</body>
+</html>
