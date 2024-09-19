@@ -1,50 +1,169 @@
-button.addEventListener('click', moveButton); // For desktop click
-button.addEventListener('touchstart', moveButton); // For mobile touch
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Button (Mobile & Proximity)</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #container {
+            text-align: center;
+        }
+        #text {
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #yes-button {
+            padding: 10px 20px;
+            background-color: #f8bbd0; /* Light pink color */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+        #button {
+            position: absolute;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #celebration {
+            display: none;
+            margin-top: 20px;
+            font-size: 24px;
+            color: #f39c12; /* Bright yellow color for celebration */
+        }
+        #image {
+            display: none;
+            margin-top: 20px;
+            width: 300px;
+            height: 382px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="text">Do you love me?</div>
+        <button id="yes-button">Yes</button>
+        <button id="button">No</button>
+        <div id="celebration">🎉🎉 Now You Both Are Mine! 🎉🎉</div>
+        <img id="image" src="img.png" alt="Celebration Image">
+    </div>
 
-function moveButton(event) {
-    const rect = button.getBoundingClientRect();
-    const buttonX = rect.left + rect.width / 2;
-    const buttonY = rect.top + rect.height / 2;
+    <script>
+        const button = document.getElementById('button');
+        const yesButton = document.getElementById('yes-button');
+        const celebration = document.getElementById('celebration');
+        const image = document.getElementById('image');
+        const text = document.getElementById('text');
+        const moveAmount = 100; // Increased move distance
+        const edgeDropAmount = 150; // More when touching screen edges
 
-    let mouseX, mouseY;
-    
-    if (event.type === 'touchstart') {
-        mouseX = event.touches[0].clientX; // Get touch position
-        mouseY = event.touches[0].clientY; // Get touch position
-    } else {
-        mouseX = event.clientX; // Get mouse position
-        mouseY = event.clientY; // Get mouse position
-    }
+        // Move button away on proximity (for mouse and proximity interactions)
+        document.addEventListener('mousemove', (event) => {
+            const rect = button.getBoundingClientRect();
+            const buttonX = rect.left + rect.width / 2;
+            const buttonY = rect.top + rect.height / 2;
 
-    const deltaX = mouseX - buttonX;
-    const deltaY = mouseY - buttonY;
+            const mouseX = event.clientX;
+            const mouseY = event.clientY;
 
-    // Apply movement
-    let newLeft = button.offsetLeft + (mouseX < buttonX ? moveAmount : -moveAmount);
-    let newTop = button.offsetTop + (mouseY < buttonY ? moveAmount : -moveAmount);
+            const deltaX = mouseX - buttonX;
+            const deltaY = mouseY - buttonY;
 
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const buttonWidth = button.offsetWidth;
-    const buttonHeight = button.offsetHeight;
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-    // Ensure button stays within the viewport
-    if (newLeft < 0) {
-        newLeft = 0;
-        newTop -= edgeDropAmount;
-    } else if (newLeft + buttonWidth > viewportWidth) {
-        newLeft = viewportWidth - buttonWidth;
-        newTop -= edgeDropAmount;
-    }
-    if (newTop < 0) {
-        newTop = 0;
-        newLeft -= edgeDropAmount;
-    } else if (newTop + buttonHeight > viewportHeight) {
-        newTop = viewportHeight - buttonHeight;
-        newLeft -= edgeDropAmount;
-    }
+            if (distance < 100) {
+                let newLeft = button.offsetLeft + (mouseX < buttonX ? moveAmount : -moveAmount);
+                let newTop = button.offsetTop + (mouseY < buttonY ? moveAmount : -moveAmount);
 
-    // Apply new position to the button
-    button.style.left = `${newLeft}px`;
-    button.style.top = `${newTop}px`;
-}
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                const buttonWidth = button.offsetWidth;
+                const buttonHeight = button.offsetHeight;
+
+                if (newLeft < 0) {
+                    newLeft = 0;
+                    newTop -= edgeDropAmount;
+                } else if (newLeft + buttonWidth > viewportWidth) {
+                    newLeft = viewportWidth - buttonWidth;
+                    newTop -= edgeDropAmount;
+                }
+                if (newTop < 0) {
+                    newTop = 0;
+                    newLeft -= edgeDropAmount;
+                } else if (newTop + buttonHeight > viewportHeight) {
+                    newTop = viewportHeight - buttonHeight;
+                    newLeft -= edgeDropAmount;
+                }
+
+                button.style.left = `${newLeft}px`;
+                button.style.top = `${newTop}px`;
+            }
+        });
+
+        // Touch interaction logic for mobile (moves when touched)
+        button.addEventListener('touchstart', (event) => {
+            event.preventDefault(); // Prevent default touch behavior
+
+            const touch = event.touches[0];
+            const touchX = touch.clientX;
+            const touchY = touch.clientY;
+
+            // Calculate new position based on touch direction
+            let newLeft = button.offsetLeft + (touchX < button.offsetLeft ? moveAmount : -moveAmount);
+            let newTop = button.offsetTop + (touchY < button.offsetTop ? moveAmount : -moveAmount);
+
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const buttonWidth = button.offsetWidth;
+            const buttonHeight = button.offsetHeight;
+
+            // Prevent the button from going outside the screen
+            if (newLeft < 0) {
+                newLeft = 0;
+                newTop -= edgeDropAmount;
+            } else if (newLeft + buttonWidth > viewportWidth) {
+                newLeft = viewportWidth - buttonWidth;
+                newTop -= edgeDropAmount;
+            }
+            if (newTop < 0) {
+                newTop = 0;
+                newLeft -= edgeDropAmount;
+            } else if (newTop + buttonHeight > viewportHeight) {
+                newTop = viewportHeight - buttonHeight;
+                newLeft -= edgeDropAmount;
+            }
+
+            // Move the button to the new position
+            button.style.left = `${newLeft}px`;
+            button.style.top = `${newTop}px`;
+        });
+
+        // "Yes" button click effects
+        yesButton.addEventListener('click', () => {
+            text.textContent = "Now you both are mine";
+            celebration.style.display = 'block';
+            image.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
